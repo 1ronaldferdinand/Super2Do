@@ -15,10 +15,10 @@ class TodoList extends Migration
     {
         Schema::create('todo_list', function (Blueprint $table){
             $table->increments('id');
-            $table->string('todo_name');
-            $table->integer('todo_status');
+            $table->string('todo_name')->nullable(true);
+            $table->integer('todo_status')->default(0)->nullable(true);
             $table->timestamp('created_at');
-        })
+        });
     }
 
     /**

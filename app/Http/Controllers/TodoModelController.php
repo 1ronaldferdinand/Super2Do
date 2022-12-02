@@ -42,6 +42,17 @@ class TodoModelController extends Controller
         return response()->json(['status' => 200]);
     }
 
+    public function markall(Request $request)
+    {
+        $data = TodoModel::where('todo_status', 0)->get();
+        foreach($data as $item){
+            $item->todo_status = 1;
+            $item->save();
+        }
+
+        return response()->json(['status' => 200]);
+    }
+
     public function delete(Request $request)
     {
         $id = $request->id;   

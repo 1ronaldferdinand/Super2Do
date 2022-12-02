@@ -24,7 +24,7 @@
         </header>
 
         <section class="main">
-            <input id="toggle-all" class="toggle-all" type="checkbox">
+            <input id="toggle-all" onclick="markall()" class="toggle-all" type="checkbox">
             <label for="toggle-all">Mark all as complete</label>
             <ul class="todo-list">
                 @foreach ($data as $item)
@@ -73,7 +73,6 @@
             window.location = '/';
         }
 
-        // Fungsi Marking Todo
         function mark(id_todo){
             $.ajaxSetup({
                 headers: {
@@ -84,6 +83,23 @@
             $.ajax({
                 type: 'PUT',
                 url: '/mark/' + id_todo,
+                dataType: 'json',
+                success: function(response){
+                    gethome();
+                }
+            });
+        }
+
+        function markall(){
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: '/markall',
                 dataType: 'json',
                 success: function(response){
                     gethome();
