@@ -53,6 +53,6 @@ class TodoModelController extends Controller
     public function destroyall()
     {
         TodoModel::where('todo_status', 1)->delete();
-        return redirect()->route('todo');
+        return response()->json(['status' => 200]);
     }
 }

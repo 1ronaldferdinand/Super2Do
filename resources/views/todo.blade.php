@@ -15,7 +15,7 @@
     <section class="todoapp">
         <header class="header">
             <h1>Super2Do</h1>
-            <form method="POST" autocomplete="off">
+            <form method="POST" action="/create" autocomplete="off">
                 @csrf
                 <div class="input-group">
                     <input type="text" class="new-todo" name="todo_name" placeholder="What needs to be done?" autofocus>
@@ -73,34 +73,6 @@
             window.location = '/';
         }
 
-        // Fungsi Create todo
-        function create(){
-            let todo_name = $('#todo_name').val();
-
-            var data = {
-                'todo_name': todo_name,
-            }
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            $.ajax({
-                type: 'POST',
-                url: 'create',
-                dataType: 'json',
-                data: data,
-                success: function(data){
-                    if(data.status == 200){
-                        $('#todo_name').val('');
-                        gethome();
-                    }
-                }
-            });
-        }
-
         // Fungsi Marking Todo
         function mark(id_todo){
             $.ajaxSetup({
@@ -135,23 +107,6 @@
                 }
             });
         }
-
-        //Fungsi Destroy todo
-        // $('body').on('click', '.destroy', function(e) {
-        //     if(confirm('Are you sure?')){
-        //         var id = $(this).data('id');
-        //         $.ajaxSetup({
-        //             headers: {
-        //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        //             }
-        //         });
-        //         $.ajax({
-        //             type: 'DELETE',
-        //             url: 'delete/' + id,
-        //         });
-        //         gethome();
-        //     }
-        // });
     </script>
 </body>
 </html>
