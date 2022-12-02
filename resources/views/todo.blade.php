@@ -29,19 +29,22 @@
             <ul class="todo-list">
                 @foreach ($data as $item)
                     <li id="{{$item['id']}}" class="{{ $item['todo_status'] }}">
-                        <form id="form-todo" action="POST">
+                        <form id="form-todo">
                             <div class="view">
                                 @method('PUT')
                                 @csrf
-                                <input class="toggle" type="checkbox" name="id" data-id="{{$item['id']}}">
+                                @if ($item['todo_status'] == 'completed')
+                                    <input onclick="mark({{$item['id']}})" class="toggle" type="checkbox" name="id" data-id="{{$item['id']}}" checked>
+                                @else
+                                    <input onclick="mark({{$item['id']}})" class="toggle" type="checkbox" name="id" data-id="{{$item['id']}}">
+                                @endif
                                 <label>{{ $item['todo_name'] }}</label>
-                                @method('DELETE')
-                                @csrf
-                                <button data-id="{{$item['id']}}" class="destroy"></button>
                             </div>
-                            @method('PUT')
-                            @csrf
                             <input class="edit" value="Create a TodoMVC template">
+                        </form>
+                        <form method="POST" action="/delete/{{$item['id']}}">
+                            @csrf
+                            <button data-id="{{$item['id']}}" class="destroy"></button>
                         </form>
                     </li>
                 @endforeach
@@ -60,14 +63,14 @@
 						<a href="#/completed">Completed</a>
 					</li>
 				</ul>
-				<button class="clear-completed">Clear completed</button>
+			    <button onclick="destroyall()" class="clear-completed">Clear completed</button>
 			</footer>
     </section>
     
     <script src="js/app.js"></script>
     <script>
         function gethome(){
-            window.location = 'todo';
+            window.location = '/';
         }
 
         // Fungsi Create todo
@@ -107,34 +110,48 @@
             });
 
             $.ajax({
-                type: 'POST',
-                url: "{{ route('mark', "+id_todo+") }}",
+                type: 'PUT',
+                url: '/mark/' + id_todo,
                 dataType: 'json',
                 success: function(response){
-                    if(response == 200){
-                        console.log(data);
-                        gethome();
-                    }
+                    gethome();
+                }
+            });
+        }
+
+        function destroyall(){
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: '/destroyall',
+                dataType: 'json',
+                success: function(response){
+                    gethome();
                 }
             });
         }
 
         //Fungsi Destroy todo
-        $('body').on('click', '.destroy', function(e) {
-            if(confirm('Are you sure?')){
-                var id = $(this).data('id');
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
-                $.ajax({
-                    type: 'DELETE',
-                    url: 'destroy/' + id,
-                });
-                gethome();
-            }
-        });
+        // $('body').on('click', '.destroy', function(e) {
+        //     if(confirm('Are you sure?')){
+        //         var id = $(this).data('id');
+        //         $.ajaxSetup({
+        //             headers: {
+        //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //             }
+        //         });
+        //         $.ajax({
+        //             type: 'DELETE',
+        //             url: 'delete/' + id,
+        //         });
+        //         gethome();
+        //     }
+        // });
     </script>
 </body>
 </html>

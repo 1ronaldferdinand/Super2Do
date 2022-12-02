@@ -44,9 +44,15 @@ class TodoModelController extends Controller
 
     public function delete(Request $request)
     {
-        $id = $request->id;
+        $id = $request->id;   
         TodoModel::where('id', $id)->delete();
+        
+        return redirect()->route('todo');
+    }
 
+    public function destroyall()
+    {
+        TodoModel::where('todo_status', 1)->delete();
         return redirect()->route('todo');
     }
 }
